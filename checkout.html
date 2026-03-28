@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | The Off Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 p-4">
+    <div class="max-w-md mx-auto space-y-6">
+        <header class="flex items-center space-x-2 py-4">
+            <a href="index.html" class="text-gray-400">← Back</a>
+            <h1 class="text-xl font-black uppercase">Checkout</h1>
+        </header>
+
+        <div class="bg-white p-6 rounded-3xl border shadow-sm space-y-4">
+            <h3 class="font-black text-xs uppercase text-gray-400">Delivery Details</h3>
+            <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" id="cust-address" placeholder="House No, Road, City, PIN" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border shadow-sm space-y-3">
+            <h3 class="font-black text-xs uppercase text-gray-400 tracking-widest">Order Summary</h3>
+            <div class="flex justify-between text-sm text-gray-500">
+                <span>MRP Total</span>
+                <span class="line-through">₹1,299</span>
+            </div>
+            <div class="flex justify-between text-sm text-green-600 font-bold">
+                <span>Discount</span>
+                <span>- ₹700</span>
+            </div>
+            <div class="flex justify-between text-sm border-b pb-3">
+                <span class="text-gray-500">Shipping</span>
+                <span class="text-blue-600 font-bold uppercase">FREE</span>
+            </div>
+            <div class="flex justify-between pt-2 items-center">
+                <span class="font-black text-lg">Total</span>
+                <span class="font-black text-3xl text-blue-600">₹599</span>
+            </div>
+        </div>
+
+        <button onclick="payNow()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl active:scale-95 transition-all">
+            PAY ONLINE (UPI)
+        </button>
+    </div>
+
+    <script>
+        function payNow() {
+            const name = document.getElementById('cust-name').value;
+            const addr = document.getElementById('cust-address').value;
+            const phone = document.getElementById('cust-phone').value;
+            const upiId = "theoffstore@nyes"; // REPLACE THIS
+            const myNumber = "917894684432"; // REPLACE THIS
+
+            if(!name || !addr || !phone) {
+                alert("Please fill all details!");
+                return;
+            }
+
+            const message = `🚀 *ORDER FROM THE OFF STORE*\n\nName: ${name}\nAddress: ${addr}\nPhone: ${phone}\n\n*Click to Pay:* upi://pay?pa=${upiId}&pn=TheOffStore&am=599&cu=INR`;
+            window.location.href = `https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`;
+        }
+    </script>
+</body>
+</html>
