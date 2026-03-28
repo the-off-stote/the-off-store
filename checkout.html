@@ -5,70 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | The Off Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-900 p-4">
     <div class="max-w-md mx-auto space-y-6 pb-20">
+        
         <header class="flex items-center space-x-3 py-4">
-            <a href="index.html" class="bg-white p-2 rounded-xl shadow-sm border text-gray-400">←</a>
+            <a href="index.html" class="bg-white p-2 px-4 rounded-2xl shadow-sm border text-gray-400 font-bold">←</a>
             <h1 class="text-xl font-black uppercase tracking-tighter text-gray-800">Checkout</h1>
         </header>
 
-        <div class="bg-white p-6 rounded-[2rem] border shadow-sm space-y-4">
+        <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm space-y-4">
             <h3 class="font-black text-[10px] uppercase text-gray-400 tracking-widest">Delivery Address</h3>
-            <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 rounded-xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-            <input type="text" id="cust-address" placeholder="House No, Area, City, PIN (Odisha)" class="w-full p-4 rounded-xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 rounded-xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="text" id="cust-address" placeholder="House No, Area, City, PIN (Odisha)" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
         </div>
 
-        <div class="bg-white p-6 rounded-[2rem] border shadow-sm space-y-3">
-            <h3 class="font-black text-[10px] uppercase text-gray-400 tracking-widest">Payment Summary</h3>
-            <div class="flex justify-between text-sm text-gray-500">
-                <span class="font-medium">MRP Total</span>
-                <span class="line-through">₹1,299</span>
-            </div>
-            <div class="flex justify-between text-sm text-green-600 font-bold">
-                <span>Discount</span>
-                <span>- ₹700</span>
-            </div>
-            <div class="flex justify-between text-sm border-b pb-4">
-                <span class="text-gray-500 font-medium">Shipping</span>
-                <div class="flex space-x-2">
-                    <span class="text-gray-400 line-through font-bold text-xs">₹99</span>
-                    <span class="text-blue-600 font-black uppercase">FREE</span>
+        <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm space-y-3">
+            <h3 class="font-black text-[10px] uppercase text-gray-400 tracking-widest">Order Summary</h3>
+            <div class="flex justify-between items-start">
+                <div>
+                    <p id="product-display-name" class="font-bold text-gray-800 text-sm">Loading product...</p>
+                    <p class="text-[10px] text-blue-600 font-black uppercase tracking-tight">Free Express Shipping (Odisha)</p>
                 </div>
+                <span id="product-display-price" class="font-black text-gray-800">₹0</span>
             </div>
-            <div class="flex justify-between pt-2 items-center">
-                <span class="font-black text-lg text-gray-800 uppercase">Total amount</span>
-                <span class="font-black text-3xl text-blue-600 tracking-tighter">₹599</span>
+            
+            <div class="border-t border-dashed pt-3 mt-3 flex justify-between items-center">
+                <span class="font-black text-lg text-gray-800 uppercase italic tracking-tighter">Total To Pay</span>
+                <span id="total-price-big" class="font-black text-3xl text-blue-600 tracking-tighter">₹0</span>
             </div>
         </div>
 
-        <button onclick="payNow()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl active:scale-95 transition-all">
+        <button onclick="processOrder()" class="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl active:scale-95 transition-all">
             PAY ONLINE (UPI)
         </button>
-        <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">Powered by Secure UPI Odisha</p>
+        
+        <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">Secure UPI Payment • Odisha Startup</p>
     </div>
 
     <script>
-        function payNow() {
+        // 1. Load the product selected from index.html
+        const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || { name: "10-in-1 Puncture Kit", price: 599 };
+
+        // 2. Update the UI with Product Details
+        document.getElementById('product-display-name').innerText = selectedProduct.name;
+        document.getElementById('product-display-price').innerText = "₹" + selectedProduct.price;
+        document.getElementById('total-price-big').innerText = "₹" + selectedProduct.price;
+
+        async function processOrder() {
             const name = document.getElementById('cust-name').value;
             const addr = document.getElementById('cust-address').value;
             const phone = document.getElementById('cust-phone').value;
             
-            // Your Personal Details
-            const upiId = "theoffstore@nyes"; 
-            const myNumber = "917894684432"; 
+            // --- YOUR LIVE TELEGRAM DETAILS ---
+            const botToken = "YOUR_BOT_TOKEN_HERE"; // PASTE YOUR TOKEN FROM BOTFATHER
+            const chatId = "YOUR_CHAT_ID_HERE";     // PASTE YOUR ID FROM USERINFOBOT
+            
+            // --- YOUR LIVE UPI ID ---
+            const myUpi = "theoffstore@nyes";
 
             if(!name || !addr || !phone) {
-                alert("Please fill in your Delivery Details to proceed.");
+                alert("Please fill in your Delivery Details!");
                 return;
             }
 
-            // Message for WhatsApp
-            const message = `🚀 *NEW ORDER - THE OFF STORE*\n\n*Product:* 10-in-1 Puncture Kit\n*Amount:* ₹599\n\n*Customer:* ${name}\n*Address:* ${addr}\n*Phone:* ${phone}\n\n✅ _Click below to Pay:_ \nupi://pay?pa=${upiId}&pn=TheOffStore&am=599&cu=INR`;
+            const orderId = "OFF" + Math.floor(100000 + Math.random() * 900000);
             
-            // Open WhatsApp
-            window.location.href = `https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`;
+            // 3. Send Data to Telegram Bot Silently
+            const telegramMsg = `🚀 *NEW ORDER: ${orderId}*\n\n` +
+                                `📦 *Item:* ${selectedProduct.name}\n` +
+                                `👤 *Name:* ${name}\n` +
+                                `📍 *Address:* ${addr}\n` +
+                                `📞 *Phone:* ${phone}\n` +
+                                `💰 *Amount:* ₹${selectedProduct.price}\n\n` +
+                                `✅ _Customer is paying now!_`;
+
+            fetch(`https://api.telegram.org/bot${8613765858:AAFQYiCGd1NcpYjvh8GMNCXw70TP1Nl7RjM}/sendMessage?chat_id=${6563154132}&text=${encodeURIComponent(telegramMsg)}&parse_mode=Markdown`);
+
+            // 4. Save to Local Order History (For "On its way" status)
+            const newOrder = {
+                id: orderId,
+                date: new Date().toLocaleDateString('en-IN'),
+                amount: "₹" + selectedProduct.price,
+                status: "ON ITS WAY",
+                trackingStatus: "Processing at Odisha Hub",
+                trackingLink: "#",
+                item: selectedProduct.name
+            };
+            
+            let history = JSON.parse(localStorage.getItem('offStoreHistory')) || [];
+            history.push(newOrder);
+            localStorage.setItem('offStoreHistory', JSON.stringify(history));
+
+            // 5. Trigger Direct UPI Payment (With Auto-Filled Order ID in Note)
+            const upiLink = `upi://pay?pa=${myUpi}&pn=TheOffStore&am=${selectedProduct.price}&cu=INR&tn=Order-${orderId}`;
+            window.location.href = upiLink;
+
+            // 6. Redirect to History page
+            setTimeout(() => {
+                window.location.href = "history.html";
+            }, 3000);
         }
     </script>
 </body>
