@@ -9,6 +9,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .snap-x { scroll-snap-type: x mandatory; }
+        .snap-center { scroll-snap-align: center; }
         .product-card:active { transform: scale(0.96); transition: 0.2s; }
     </style>
 </head>
@@ -21,14 +23,14 @@
             </div>
             <h1 class="text-lg font-black tracking-tighter uppercase">The Off Store</h1>
         </div>
-        <a href="history.html" class="text-[10px] font-bold text-blue-600 uppercase px-3 py-1 bg-blue-50 rounded-full border border-blue-100 italic">Orders</a>
+        <a href="history.html" class="text-[10px] font-bold text-blue-600 uppercase px-3 py-1 bg-blue-50 rounded-full border border-blue-100 italic">My Orders</a>
     </nav>
 
     <div class="p-4">
         <div class="bg-blue-600 rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden">
             <p class="text-[10px] font-black opacity-80 uppercase tracking-widest">Live in Odisha</p>
-            <h2 class="text-3xl font-black tracking-tighter leading-none mt-1">FLASH SALE <br>IS LIVE.</h2>
-            <p class="text-xs font-bold mt-3 opacity-90">🚀 Delivery Pan-Odisha (3-5 Days)</p>
+            <h2 class="text-3xl font-black tracking-tighter leading-none mt-1 uppercase">Flash Sale <br>is Live.</h2>
+            <p class="text-xs font-bold mt-3 opacity-90">🚀 Free Express Delivery Pan-Odisha</p>
             <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl font-black italic">OFF</div>
         </div>
     </div>
@@ -39,15 +41,19 @@
     <div id="product-modal" class="fixed inset-0 bg-white z-[60] hidden overflow-y-auto no-scrollbar">
         <div class="max-w-md mx-auto relative pb-32">
             
-            <button onclick="closeProduct()" class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-md px-4 py-2 rounded-2xl z-10 font-bold text-sm text-gray-800 border leading-none">← Back</button>
+            <button onclick="closeProduct()" class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-md px-4 py-2 rounded-2xl z-20 font-bold text-sm text-gray-800 border leading-none">← Back</button>
             
-            <img id="modal-img" src="" class="w-full h-[380px] object-cover rounded-b-[3rem] shadow-lg">
+            <div class="relative w-full h-[420px] overflow-hidden bg-gray-100 rounded-b-[3rem] shadow-lg">
+                <div id="modal-carousel" class="flex overflow-x-auto snap-x no-scrollbar h-full">
+                    </div>
+                <div id="carousel-dots" class="absolute bottom-6 left-0 right-0 flex justify-center space-x-2 z-10"></div>
+            </div>
             
             <div class="p-6 space-y-6">
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <span id="modal-tag" class="bg-blue-600 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest"></span>
-                        <span class="text-green-600 font-black text-[10px] uppercase italic">Verified Local Seller</span>
+                        <span class="text-green-600 font-black text-[10px] uppercase italic">Verified Local Hub</span>
                     </div>
                     <h2 id="modal-title" class="text-3xl font-black tracking-tighter leading-tight text-gray-900"></h2>
                     <div class="flex items-center space-x-3">
@@ -57,32 +63,26 @@
                     </div>
                 </div>
 
-                <div class="space-y-3">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">More Views</h3>
-                    <div class="grid grid-cols-3 gap-2" id="modal-gallery">
-                        </div>
-                </div>
-
-                <div class="bg-gray-100 p-5 rounded-3xl space-y-2">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Specs & Details</h3>
+                <div class="bg-gray-100 p-5 rounded-3xl space-y-3 border border-gray-200">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Product Details</h3>
                     <p id="modal-desc" class="text-sm font-medium text-gray-700 leading-relaxed"></p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div class="bg-white p-4 rounded-3xl border shadow-sm text-center">
                         <p class="text-[9px] text-blue-500 font-black mb-1 italic uppercase tracking-widest">Location</p>
-                        <p class="text-[11px] font-bold">Odisha Hub</p>
+                        <p class="text-[11px] font-bold">Odisha Delivery</p>
                     </div>
                     <div class="bg-white p-4 rounded-3xl border shadow-sm text-center">
                         <p class="text-[9px] text-green-500 font-black mb-1 italic uppercase tracking-widest">Shipping</p>
-                        <p class="text-[11px] font-bold">Free Today</p>
+                        <p class="text-[11px] font-bold">Free & Fast</p>
                     </div>
                 </div>
             </div>
 
             <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t z-[70]">
                 <div class="max-w-md mx-auto">
-                    <button id="order-btn-link" onclick="goToCheckout()" class="w-full bg-black text-white text-center py-5 rounded-3xl font-black text-lg shadow-xl uppercase active:scale-95 transition-all">
+                    <button onclick="goToCheckout()" class="w-full bg-black text-white text-center py-5 rounded-3xl font-black text-lg shadow-xl uppercase active:scale-95 transition-all">
                         Buy Now — ₹<span id="btn-price"></span>
                     </button>
                 </div>
@@ -91,6 +91,7 @@
     </div>
 
     <script>
+        // --- 1. PRODUCT DATABASE WITH YOUR NEW IMAGES ---
         const products = [
             {
                 id: 1,
@@ -98,33 +99,30 @@
                 price: 599,
                 mrp: 1299,
                 tag: "Bestseller",
-                img: "https://jpcdn.it/img/1c173f945a3a7ce7b2ba22f2e36259ed.png",
-                desc: "Never get stranded on Odisha highways again. This heavy-duty kit fixes tubeless tyres in minutes. Includes T-handle tools, 5 rubber strips, and cutter. Perfect for Bikes, Scooty, and Cars.",
-                // PASTE YOUR EXTRA IMAGE LINKS HERE
-                extraImages: [
+                images: [
                     "https://jpcdn.it/img/1c173f945a3a7ce7b2ba22f2e36259ed.png", // Image 1
-                    "https://jpcdn.it/img/1c173f945a3a7ce7b2ba22f2e36259ed.png", // Image 2
-                    "https://jpcdn.it/img/1c173f945a3a7ce7b2ba22f2e36259ed.png"     // Image 3
-                ]
+                    "https://jpcdn.it/img/d51b8245d13eb2387a55b03964f6b087.png", // Image 2
+                    "https://jpcdn.it/img/4ba09e0aea71b8ffc81a6fa401789375.png"  // Image 3
+                ],
+                desc: "Never get stranded on Odisha highways again. This heavy-duty kit fixes tubeless tyres in minutes. Includes T-handle tools, 5 high-grip rubber strips, and cutter. Perfect for Bikes, Scooty, and Cars."
             },
             {
                 id: 2,
-                name: "Product 2 Name",
+                name: "Add Product 2 Here",
                 price: 799,
                 mrp: 1499,
                 tag: "New",
-                img: "https://jpcdn.it/img/1c173f945a3a7ce7b2ba22f2e36259ed.png",
-                desc: "Description of your second product goes here.",
-                extraImages: []
+                images: ["https://via.placeholder.com/600x600?text=Product+2"],
+                desc: "Describe your second product here."
             }
         ];
 
-        // Render Grid
+        // --- 2. RENDER THE HOME GRID ---
         const grid = document.getElementById('main-grid');
         products.forEach(p => {
             grid.innerHTML += `
                 <div onclick="openProduct(${p.id})" class="product-card bg-white rounded-[2.5rem] border shadow-sm overflow-hidden">
-                    <img src="${p.img}" class="w-full h-36 object-cover">
+                    <img src="${p.images[0]}" class="w-full h-36 object-cover">
                     <div class="p-4 space-y-1">
                         <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest">${p.tag}</p>
                         <h3 class="font-bold text-xs text-gray-800 truncate">${p.name}</h3>
@@ -137,9 +135,24 @@
             `;
         });
 
+        // --- 3. MODAL GALLERY LOGIC ---
         function openProduct(id) {
             const p = products.find(i => i.id === id);
-            document.getElementById('modal-img').src = p.img;
+            
+            // Setup Swipe Carousel
+            const carousel = document.getElementById('modal-carousel');
+            const dots = document.getElementById('carousel-dots');
+            carousel.innerHTML = '';
+            dots.innerHTML = '';
+            
+            p.images.forEach((imgUrl, index) => {
+                // Add Image
+                carousel.innerHTML += `<img src="${imgUrl}" class="w-full h-full flex-shrink-0 object-cover snap-center">`;
+                // Add Dot
+                dots.innerHTML += `<div class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === 0 ? 'bg-blue-600 w-4' : 'bg-gray-300'}"></div>`;
+            });
+
+            // Update Text Details
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = "₹" + p.price;
             document.getElementById('modal-mrp').innerText = "₹" + p.mrp;
@@ -147,16 +160,21 @@
             document.getElementById('modal-tag').innerText = p.tag;
             document.getElementById('btn-price').innerText = p.price;
 
-            // Render Extra Images Gallery
-            const gallery = document.getElementById('modal-gallery');
-            gallery.innerHTML = '';
-            p.extraImages.forEach(imgUrl => {
-                gallery.innerHTML += `<img src="${imgUrl}" class="w-full h-24 object-cover rounded-2xl border bg-gray-50 shadow-sm">`;
-            });
+            // Handle Dot Highlighting on Swipe
+            carousel.onscroll = () => {
+                const scrollIndex = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+                Array.from(dots.children).forEach((dot, i) => {
+                    if (i === scrollIndex) {
+                        dot.className = "w-4 h-1.5 rounded-full bg-blue-600 transition-all duration-300";
+                    } else {
+                        dot.className = "w-1.5 h-1.5 rounded-full bg-gray-300 transition-all duration-300";
+                    }
+                });
+            };
 
-            // Save selected product for checkout page
+            // Save for Checkout
             localStorage.setItem('selectedProduct', JSON.stringify(p));
-
+            
             document.getElementById('product-modal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
