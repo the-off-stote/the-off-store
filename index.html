@@ -7,77 +7,157 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .hidden-product { display: none !important; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .category-label { scroll-margin-top: 120px; }
+        /* Amazon-style thumbnail hover */
+        .thumb-active { border-color: #2563eb !important; scale: 1.1; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-10">
 
-    <nav class="bg-white border-b sticky top-0 z-50 p-4 space-y-3">
+    <nav class="bg-white border-b sticky top-0 z-50 p-4 space-y-3 shadow-sm">
         <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2" onclick="window.scrollTo(0,0)">
                 <div class="bg-black text-white px-2 py-1 rounded font-black text-sm">OFF</div>
-                <h1 class="font-black text-lg tracking-tighter">THE OFF STORE</h1>
+                <h1 class="font-black text-lg tracking-tighter uppercase">The Off Store</h1>
             </div>
-            <button onclick="window.location.href='history.html'" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full uppercase">My Orders</button>
+            <button onclick="window.location.href='history.html'" class="text-[10px] font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-full uppercase tracking-widest">My Orders</button>
         </div>
-        <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Search 140+ items..." class="w-full bg-gray-100 rounded-2xl py-3 px-5 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-600">
+        
+        <div class="relative">
+            <input type="text" id="searchInput" onkeyup="searchStore()" placeholder="Search 140+ tools & gear..." 
+            class="w-full bg-gray-100 border-none rounded-2xl py-3 px-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 outline-none">
+        </div>
     </nav>
 
-    <main class="p-4 grid grid-cols-2 gap-4" id="productGrid">
-        <div class="product-card bg-white p-3 rounded-[2.5rem] border shadow-sm space-y-3" data-name="10-in-1 emergency puncture kit">
-            <div class="aspect-square rounded-[2rem] overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+    <div class="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar sticky top-[115px] bg-white/80 backdrop-blur-md z-40 border-b">
+        <button onclick="filterCat('ALL')" class="whitespace-nowrap bg-black text-white px-5 py-2 rounded-full text-[10px] font-black uppercase">All</button>
+        <button onclick="filterCat('KIT')" class="whitespace-nowrap bg-white border px-5 py-2 rounded-full text-[10px] font-black uppercase text-gray-500">Kits</button>
+        <button onclick="filterCat('LIT')" class="whitespace-nowrap bg-white border px-5 py-2 rounded-full text-[10px] font-black uppercase text-gray-500">Lighting</button>
+        <button onclick="filterCat('BIK')" class="whitespace-nowrap bg-white border px-5 py-2 rounded-full text-[10px] font-black uppercase text-gray-500">Bike</button>
+        <button onclick="filterCat('CAR')" class="whitespace-nowrap bg-white border px-5 py-2 rounded-full text-[10px] font-black uppercase text-gray-500">Car</button>
+    </div>
+
+    <main class="p-4 grid grid-cols-2 gap-4 min-h-screen" id="productGrid">
+        </main>
+
+    <footer class="bg-black text-white mt-20 pt-16 pb-10 px-8 rounded-t-[3rem]">
+        <div class="space-y-10">
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <div class="bg-white text-black px-3 py-1 rounded font-black text-lg">OFF</div>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase">The Off Store</h2>
+                </div>
+                <p class="text-gray-400 font-bold text-sm leading-relaxed max-w-xs">
+                    Premium Emergency Gear & Tactical Tools. Shipping across 19,000+ Pincodes Pan-India. 🇮🇳
+                </p>
             </div>
-            <div class="px-1">
-                <h3 class="font-bold text-xs text-gray-800 h-8 line-clamp-2">10-in-1 Emergency Puncture Kit</h3>
-                <div class="flex items-center justify-between mt-2">
-                    <span class="font-black text-blue-600">₹599</span>
-                    <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 gap-2">
-                        <button onclick="changeQty('qty-1', -1)" class="text-xs font-bold">-</button>
-                        <span id="qty-1" class="text-[10px] font-black">1</span>
-                        <button onclick="changeQty('qty-1', 1)" class="text-xs font-bold">+</button>
+
+            <div class="grid grid-cols-1 gap-8 pt-6">
+                <div class="flex flex-col gap-4">
+                    <h4 class="text-xs font-black text-blue-500 uppercase tracking-[0.3em]">Customer Support</h4>
+                    <a href="https://wa.me/918917228811" class="text-2xl font-black hover:text-green-500 transition-colors">WhatsApp Us</a>
+                    <a href="history.html" class="text-2xl font-black hover:text-blue-500 transition-colors">Track Order</a>
+                </div>
+
+                <div class="flex flex-col gap-4 border-t border-gray-800 pt-8">
+                    <h4 class="text-xs font-black text-blue-500 uppercase tracking-[0.3em]">Legal & Safety</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="shipping.html" class="text-sm font-black uppercase hover:underline">Shipping</a>
+                        <a href="terms.html" class="text-sm font-black uppercase hover:underline">Terms</a>
+                        <a href="privacy.html" class="text-sm font-black uppercase hover:underline">Privacy</a>
+                        <a href="refund.html" class="text-sm font-black uppercase hover:underline">Refunds</a>
                     </div>
                 </div>
-                <button onclick="initBuy('KIT', 'Puncture Kit', 599, 'qty-1')" class="w-full mt-3 bg-black text-white text-[10px] font-black py-2.5 rounded-full uppercase">Buy Now</button>
+            </div>
+
+            <div class="pt-12 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest text-center">
+                    Administered in Odisha, India • Secure UPI Gateway
+                </p>
+                <div class="flex gap-4 opacity-30">
+                    <img src="https://img.icons8.com/color/48/upi.png" class="h-6">
+                    <img src="https://img.icons8.com/color/48/visa.png" class="h-6">
+                    <img src="https://img.icons8.com/color/48/mastercard.png" class="h-6">
+                </div>
             </div>
         </div>
-    </main>
-
-    <footer class="p-10 bg-white border-t mt-10 space-y-6">
-        <div class="grid grid-cols-2 gap-4 text-[10px] font-black uppercase text-gray-400">
-            <a href="privacy.html">Privacy</a>
-            <a href="shipping.html">Shipping & Refund</a>
-            <a href="terms.html">T&C</a>
-            <a href="https://wa.me/918917228811" class="text-green-600">WhatsApp Us</a>
-        </div>
-        <p class="text-[9px] font-bold text-gray-300">© 2026 THE OFF STORE • ODISHA</p>
     </footer>
 
+    <script src="products.js"></script>
     <script>
-        function changeQty(id, delta) {
-            let el = document.getElementById(id);
-            let val = parseInt(el.innerText) + delta;
-            if(val > 0) el.innerText = val;
+        const grid = document.getElementById('productGrid');
+
+        function loadProducts(filter = 'ALL') {
+            grid.innerHTML = '';
+            inventory.forEach((item, index) => {
+                if(filter !== 'ALL' && item.category !== filter) return;
+
+                const productId = `OFF-${item.category}-${100 + index}`;
+                const card = document.createElement('div');
+                card.className = "product-card bg-white p-3 rounded-[2.5rem] border shadow-sm space-y-3";
+                card.setAttribute('data-keywords', item.searchKeywords.toLowerCase());
+
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="aspect-square bg-gray-50 rounded-[2rem] overflow-hidden">
+                            <img id="img-main-${index}" src="${item.images[0]}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex gap-1 justify-center px-1">
+                            ${item.images.map((img, i) => `
+                                <img src="${img}" onclick="swapImg(${index}, '${img}')" 
+                                class="w-7 h-7 rounded-lg border-2 border-transparent object-cover cursor-pointer hover:border-blue-400">
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <p class="text-[7px] font-black text-gray-300 uppercase tracking-widest">${productId}</p>
+                        <h3 class="font-bold text-[11px] text-gray-800 h-8 line-clamp-2 leading-tight uppercase">${item.name}</h3>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="font-black text-blue-600 text-sm">₹${item.price}</span>
+                            <button onclick="buyNow('${item.category}', '${item.name}', ${item.price})" 
+                            class="bg-black text-white text-[9px] font-black px-4 py-2 rounded-full uppercase active:scale-95 transition-transform">Buy</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function initBuy(prefix, name, price, qtyId) {
-            const qty = parseInt(document.getElementById(qtyId).innerText);
-            const orderId = `OFF-${prefix}-${Date.now().toString().slice(-6)}`;
-            const data = { id: orderId, name: name, price: price, qty: qty, total: price * qty };
+        function swapImg(idx, src) {
+            document.getElementById(`img-main-${idx}`).src = src;
+        }
+
+        function filterCat(cat) {
+            loadProducts(cat);
+            // Visual feedback for buttons
+            event.target.parentElement.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('bg-black', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-500');
+            });
+            event.target.classList.add('bg-black', 'text-white');
+        }
+
+        function searchStore() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords');
+                card.style.display = keywords.includes(term) ? 'block' : 'none';
+            });
+        }
+
+        function buyNow(prefix, name, price) {
+            const orderId = `OFF-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const data = { id: orderId, orderId: orderId, name: name, price: price, qty: 1, total: price };
             localStorage.setItem('pendingOrder', JSON.stringify(data));
             window.location.href = 'checkout.html';
         }
 
-        function searchItems() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('product-card');
-            for (let card of cards) {
-                let name = card.getAttribute('data-name');
-                card.style.display = name.includes(input) ? "block" : "none";
-            }
-        }
+        // Initial Load
+        loadProducts();
     </script>
 </body>
 </html>
