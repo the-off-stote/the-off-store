@@ -3,175 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Off Store | Pan-India Gear</title>
+    <title>The Off Store | Luxury Fragrance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; scroll-behavior: smooth; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .hidden-product { display: none !important; }
-        .category-section { scroll-margin-top: 140px; min-height: 100px; }
-        .product-card { transition: transform 0.1s; border: 1px solid #f1f5f9; }
-        .product-card:active { transform: scale(0.96); }
+        .product-card { background: #0a0a0a; border: 1px solid #1a1a1a; }
+        .img-slider { scroll-snap-type: x mandatory; display: flex; overflow-x: auto; scroll-behavior: smooth; }
+        .img-slider img { scroll-snap-align: center; flex-shrink: 0; width: 100%; height: 100%; object-fit: cover; }
+        .scent-tag { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-10">
 
-    <nav class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 p-4 space-y-3 shadow-sm">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2" onclick="window.scrollTo(0,0)">
-                <div class="bg-black text-white px-2 py-1 rounded font-black text-sm">OFF</div>
-                <h1 class="font-black text-lg tracking-tighter uppercase">The Off Store</h1>
-            </div>
-            <button onclick="window.location.href='history.html'" class="text-[10px] font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-full uppercase tracking-widest">My Orders</button>
+    <nav class="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2" onclick="window.scrollTo(0,0)">
+            <div class="bg-white text-black px-2 py-1 rounded font-black text-sm">OFF</div>
+            <h1 class="font-black text-lg tracking-tighter uppercase">The Off Store</h1>
         </div>
-        
-        <div class="relative">
-            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Search gear, tools, or kits..." 
-            class="w-full bg-gray-100 border-none rounded-2xl py-3.5 px-5 text-sm font-bold focus:ring-2 focus:ring-blue-600 outline-none">
-        </div>
+        <button onclick="window.location.href='history.html'" class="text-[10px] font-black text-blue-500 bg-blue-500/10 px-4 py-2 rounded-full uppercase tracking-widest border border-blue-500/20">My Orders</button>
     </nav>
 
-    <div class="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar sticky top-[125px] z-40 bg-white/50 backdrop-blur-sm">
-        <a href="#cat-emergency" class="whitespace-nowrap bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase">Emergency</a>
-        <a href="#cat-lighting" class="whitespace-nowrap bg-white border px-5 py-2.5 rounded-full text-[10px] font-black uppercase text-gray-400">Lighting</a>
-        <a href="#cat-bike" class="whitespace-nowrap bg-white border px-5 py-2.5 rounded-full text-[10px] font-black uppercase text-gray-400">Bike Gear</a>
-        <a href="#cat-car" class="whitespace-nowrap bg-white border px-5 py-2.5 rounded-full text-[10px] font-black uppercase text-gray-400">Car Care</a>
-    </div>
+    <header class="p-10 pt-16 text-center space-y-2">
+        <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em]">Signature Collection</p>
+        <h2 class="text-6xl font-black tracking-tighter uppercase leading-[0.85]">Luxury<br>Perfumes</h2>
+        <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest pt-4 italic">Bhubaneswar • Pan-India Delivery</p>
+    </header>
 
-    <main class="p-4 space-y-16">
-
-        <section id="cat-emergency" class="category-section">
-            <h2 class="text-3xl font-black mb-6 px-2 tracking-tighter uppercase">Emergency Kits</h2>
-            <div class="grid grid-cols-2 gap-4" id="emergency-grid">
-                
-                <div class="product-card bg-white p-3 rounded-[2.5rem] shadow-sm space-y-3" data-name="10-in-1 emergency puncture kit">
-                    <div class="aspect-square bg-gray-50 rounded-[2rem] overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80" class="w-full h-full object-cover">
-                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-full text-[8px] font-black italic">🇮🇳 PAN-INDIA</div>
-                    </div>
-                    <div class="px-1">
-                        <h3 class="font-bold text-xs text-gray-800 h-8 line-clamp-2 leading-tight">10-in-1 Emergency Puncture Kit</h3>
-                        <div class="flex items-center justify-between mt-3">
-                            <div class="flex flex-col">
-                                <span class="font-black text-blue-600 text-sm">₹599</span>
-                                <span class="text-[9px] text-gray-400 line-through font-bold">₹1299</span>
-                            </div>
-                            <div class="flex items-center bg-gray-100 rounded-full px-2 py-1 gap-2">
-                                <button onclick="changeQty('qty-1', -1)" class="text-xs font-black px-1">-</button>
-                                <span id="qty-1" class="text-[10px] font-black">1</span>
-                                <button onclick="changeQty('qty-1', 1)" class="text-xs font-black px-1">+</button>
-                            </div>
-                        </div>
-                        <button onclick="initBuy('KIT', '10-in-1 Puncture Kit', 599, 'qty-1')" class="w-full mt-3 bg-black text-white text-[10px] font-black py-3 rounded-full uppercase tracking-widest shadow-lg active:bg-blue-600">Buy Now</button>
-                    </div>
+    <main class="p-4 space-y-16 max-w-md mx-auto">
+        
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800" alt="Oud Intense 1">
+                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800" alt="Oud Intense 2">
+                    <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800" alt="Oud Intense 3">
                 </div>
-
-                </div>
-        </section>
-
-        <section id="cat-lighting" class="category-section">
-            <h2 class="text-3xl font-black mb-6 px-2 tracking-tighter uppercase">Lighting</h2>
-            <div class="grid grid-cols-2 gap-4" id="lighting-grid">
-                <p class="text-[10px] font-black text-gray-300 uppercase p-2 col-span-2 italic">More items coming soon...</p>
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest border border-white/10 italic">Swipe Images</div>
             </div>
-        </section>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Oud Intense 01</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2">Woody & Earthy</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">DARK OUD</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">LEATHER</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">SPICE</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹349</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">A powerful, smokey masterpiece designed for evening wear. Deep notes of agarwood blended with aged leather.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-1', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-1" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-1', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P1', 'Oud Intense 01', 349, 'qty-1')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
 
-        <section id="cat-bike" class="category-section">
-            <h2 class="text-3xl font-black mb-6 px-2 tracking-tighter uppercase">Bike Gear</h2>
-            <div class="grid grid-cols-2 gap-4" id="bike-grid"></div>
-        </section>
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800" alt="Aqua Drift 1">
+                    <img src="https://images.unsplash.com/photo-1616948055600-a1913bc5aa2e?q=80&w=800" alt="Aqua Drift 2">
+                    <img src="https://images.unsplash.com/photo-1583445013765-43c22c4a27f8?q=80&w=800" alt="Aqua Drift 3">
+                </div>
+            </div>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Aqua Drift 02</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Fresh & Oceanic</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">SEA SALT</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">MINT</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">BERGAMOT</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹279</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">The ultimate office scent. Crisp oceanic breeze combined with refreshing citrus and cool peppermint.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-2', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-2" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-2', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P2', 'Aqua Drift 02', 279, 'qty-2')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
 
-        <section id="cat-car" class="category-section">
-            <h2 class="text-3xl font-black mb-6 px-2 tracking-tighter uppercase">Car Care</h2>
-            <div class="grid grid-cols-2 gap-4" id="car-grid"></div>
-        </section>
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1557170334-a9632e77c6e4?q=80&w=800" alt="Saffron 1">
+                    <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc2069?q=80&w=800" alt="Saffron 2">
+                    <img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800" alt="Saffron 3">
+                </div>
+            </div>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Midnight Saffron</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Spicy & Exotic</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">SAFFRON</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">VANILLA</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹399</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">A rare blend of high-grade saffron and creamy vanilla. Luxury that lasts over 12 hours on skin.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-3', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-3" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-3', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P3', 'Midnight Saffron', 399, 'qty-3')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1615484477778-ca3b77940c25?q=80&w=800" alt="Citrus 1">
+                    <img src="https://images.unsplash.com/photo-1587017739510-0e3124859016?q=80&w=800" alt="Citrus 2">
+                    <img src="https://images.unsplash.com/photo-1619994403073-20d8e8f42145?q=80&w=800" alt="Citrus 3">
+                </div>
+            </div>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Citrus Bloom 04</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Floral & Zesty</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">LEMON</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">JASMINE</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹249</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">Light, airy, and feminine. Zesty lemon peel meets fresh white jasmine for a perfect summer day.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-4', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-4" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-4', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P4', 'Citrus Bloom 04', 249, 'qty-4')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1515377662630-cd03bc624464?q=80&w=800" alt="Velvet 1">
+                    <img src="https://images.unsplash.com/photo-1588405865213-910e539b699e?q=80&w=800" alt="Velvet 2">
+                    <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=800" alt="Velvet 3">
+                </div>
+            </div>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Royal Velvet 05</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Musky & Powder-Smooth</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">WHITE MUSK</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">SANDALWOOD</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹329</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">A velvety smooth experience. Notes of musk and sandalwood that project a clean, royal aura.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-5', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-5" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-5', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P5', 'Royal Velvet 05', 329, 'qty-5')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card rounded-[3.5rem] p-5 space-y-5">
+            <div class="relative aspect-square rounded-[2.5rem] overflow-hidden">
+                <div class="img-slider h-full no-scrollbar">
+                    <img src="https://images.unsplash.com/photo-1590736704728-f4730bb30770?q=80&w=800" alt="Amber 1">
+                    <img src="https://images.unsplash.com/photo-1613522120272-970636605011?q=80&w=800" alt="Amber 2">
+                    <img src="https://images.unsplash.com/photo-1585120040315-2241b774ad0f?q=80&w=800" alt="Amber 3">
+                </div>
+            </div>
+            <div class="px-2 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-black text-2xl uppercase tracking-tighter">Gold Amber 06</h3>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Warm & Sweet</p>
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">AMBER</span>
+                            <span class="scent-tag text-[8px] font-black px-2 py-1 rounded-md">HONEY</span>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-black text-blue-500">₹299</span>
+                </div>
+                <p class="text-[11px] text-gray-400 font-medium leading-relaxed italic">The classic crowd-pleaser. Warm amber notes with a honey-sweet finish that leaves a lasting impression.</p>
+                <div class="flex gap-3 pt-2">
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2.5 gap-5">
+                        <button onclick="changeQty('qty-6', -1)" class="text-xl font-black">-</button>
+                        <span id="qty-6" class="text-sm font-black w-4 text-center">1</span>
+                        <button onclick="changeQty('qty-6', 1)" class="text-xl font-black">+</button>
+                    </div>
+                    <button onclick="initBuy('P6', 'Gold Amber 06', 299, 'qty-6')" class="flex-1 bg-white text-black rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
 
     </main>
 
-    <footer class="bg-black text-white mt-20 rounded-t-[3rem] p-10 pb-24 space-y-12">
-        
-        <div class="bg-blue-600 p-8 rounded-[2.5rem] space-y-4 shadow-2xl shadow-blue-900/20">
+    <footer class="bg-white text-black mt-20 rounded-t-[3rem] p-10 pb-24 space-y-12">
+        <div class="bg-blue-600 p-8 rounded-[2.5rem] space-y-4 shadow-2xl shadow-blue-900/20 text-white">
             <h4 class="font-black text-2xl tracking-tighter uppercase leading-none">Need Help?<br>Contact Support</h4>
             <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest">Available 10AM - 8PM • Pan-India</p>
             <a href="https://wa.me/918917228811" class="inline-block bg-white text-blue-600 px-6 py-3 rounded-full font-black text-xs uppercase tracking-widest active:scale-95 transition-all">
                 WhatsApp Us 💬
             </a>
         </div>
-
         <div class="grid grid-cols-1 gap-8">
             <div class="space-y-4">
-                <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Quick Links</p>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Quick Links</p>
                 <div class="flex flex-col gap-4 text-xl font-black uppercase tracking-tighter">
-                    <a href="history.html" class="hover:text-blue-500 transition-colors">Track My Order</a>
-                    <a href="shipping.html" class="hover:text-blue-500 transition-colors">Shipping & Returns</a>
-                    <a href="privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
-                    <a href="terms.html" class="hover:text-blue-500 transition-colors">Terms of Service</a>
+                    <a href="history.html">Track My Order</a>
+                    <a href="shipping.html">Shipping & Returns</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
                 </div>
             </div>
-
-            <div class="space-y-4 pt-4 border-t border-white/10">
-                <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Store Location</p>
-                <p class="text-sm font-bold text-gray-400">Ganjam, Odisha<br>Serving Pan-India 🇮🇳</p>
-            </div>
         </div>
-
-        <div class="pt-10 flex flex-col items-center gap-4 border-t border-white/5">
-            <div class="bg-white text-black px-3 py-1.5 rounded font-black text-xs">OFF</div>
-            <p class="text-[9px] font-black text-gray-600 uppercase tracking-[0.5em]">© 2026 THE OFF STORE</p>
+        <div class="pt-10 flex flex-col items-center gap-4 border-t border-gray-100">
+            <div class="bg-black text-white px-3 py-1.5 rounded font-black text-xs">OFF</div>
+            <p class="text-[9px] font-black text-gray-300 uppercase tracking-[0.5em]">© 2026 THE OFF STORE</p>
         </div>
     </footer>
 
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-xs bg-white/90 backdrop-blur-xl border border-gray-100 h-16 rounded-full shadow-2xl z-[100] flex items-center justify-around px-4">
-        <a href="#cat-emergency" class="flex flex-col items-center gap-1">
-            <span class="text-lg">🚨</span>
-            <span class="text-[8px] font-black uppercase text-gray-400">Emergency</span>
-        </a>
-        <a href="#cat-lighting" class="flex flex-col items-center gap-1">
-            <span class="text-lg">💡</span>
-            <span class="text-[8px] font-black uppercase text-gray-400">Lighting</span>
-        </a>
-        <a href="#cat-bike" class="flex flex-col items-center gap-1">
-            <span class="text-lg">🏍️</span>
-            <span class="text-[8px] font-black uppercase text-gray-400">Bike</span>
-        </a>
-        <a href="history.html" class="flex flex-col items-center gap-1">
-            <span class="text-lg">📦</span>
-            <span class="text-[8px] font-black uppercase text-gray-400">Orders</span>
-        </a>
-    </div>
-
     <script>
-        // Smooth scroll for all anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Search engine (Fixed for better performance)
-        function searchItems() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('product-card');
-            for (let card of cards) {
-                let name = card.getAttribute('data-name');
-                card.style.display = name.includes(input) ? "block" : "none";
-            }
-        }
-
+        // Quantity Controller
         function changeQty(id, delta) {
-            let el = document.getElementById(id);
+            const el = document.getElementById(id);
             let val = parseInt(el.innerText) + delta;
-            if (val > 0) el.innerText = val;
+            if (val > 0) el.innerText = val; // Prevents ordering 0 items
         }
 
+        // Logic Engine - Packages data perfectly for checkout.html
         function initBuy(prefix, name, price, qtyId) {
             const qty = parseInt(document.getElementById(qtyId).innerText);
-            const orderId = `OFF-${prefix}-${Date.now().toString().slice(-6)}`;
-            const data = { id: orderId, name: name, price: price, qty: qty, total: price * qty };
+            
+            // Generates unique order ID (e.g., OFF-P3-1A2B3C)
+            const orderId = `OFF-${prefix}-${Date.now().toString().slice(-6).toUpperCase()}`;
+            
+            // Exact JSON structure the checkout.html is expecting
+            const data = { 
+                id: orderId, 
+                name: name, 
+                price: price, 
+                qty: qty, 
+                total: price * qty 
+            };
+            
+            // Saves to browser and triggers the redirect to the payment gate
             localStorage.setItem('pendingOrder', JSON.stringify(data));
             window.location.href = 'checkout.html';
         }
