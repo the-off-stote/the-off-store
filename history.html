@@ -8,27 +8,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-50 p-6 font-['Inter']">
-    <button onclick="window.location.href='index.html'" class="mb-6 font-black text-xs uppercase text-blue-600">← Back to Store</button>
-    <h2 class="text-2xl font-black uppercase tracking-tighter mb-6">Order History</h2>
-    <div id="historyList" class="space-y-4"></div>
+    
+    <button onclick="window.location.href='index.html'" class="mb-6 font-black text-[10px] uppercase text-blue-600 flex items-center gap-2">
+        ← Back to Store
+    </button>
+    
+    <h2 class="text-3xl font-black uppercase tracking-tighter mb-8 text-gray-900">Order History</h2>
+    
+    <div id="historyList" class="space-y-6">
+        </div>
 
     <script>
-        const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+        // Use the same key "orderHistory" saved in checkout.html
+        const rawHistory = localStorage.getItem('orderHistory');
+        const history = rawHistory ? JSON.parse(rawHistory) : [];
         const list = document.getElementById('historyList');
 
         if(history.length === 0) {
-            list.innerHTML = `<p class="text-gray-400 font-bold text-sm">No orders found yet.</p>`;
+            list.innerHTML = `
+                <div class="text-center py-20">
+                    <p class="text-gray-400 font-bold text-sm uppercase tracking-widest">No orders found yet.</p>
+                </div>`;
         } else {
+            // Reverse to show the newest order at the top
             history.reverse().forEach(item => {
+                // FIXED: We now check for 'orderId' and 'name' or 'productName'
+                const displayId = item.orderId || "OFF-NEW";
+                const displayName = item.name || "Item";
+                const displayQty = item.qty || 1;
+                const displayTotal = item.total || 0;
+                const displayDate = item.date || new Date().toLocaleDateString();
+
                 list.innerHTML += `
-                    <div class="bg-white p-5 rounded-3xl border shadow-sm">
+                    <div class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-4">
                         <div class="flex justify-between items-start">
-                            <span class="text-[9px] font-black bg-blue-100 text-blue-600 px-2 py-1 rounded-md uppercase">${item.id}</span>
-                            <span class="text-[10px] font-bold text-gray-400">${item.date}</span>
+                            <span class="text-[9px] font-black bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full uppercase tracking-widest border border-blue-100">
+                                ${displayId}
+                            </span>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">${displayDate}</span>
                         </div>
-                        <h4 class="font-bold text-sm mt-2 text-gray-800">${item.name} x ${item.qty}</h4>
-                        <p class="text-blue-600 font-black mt-1">₹${item.total}</p>
-                        <p class="text-[9px] font-bold text-orange-500 uppercase mt-2">Status: Awaiting Dispatch</p>
+                        
+                        <div>
+                            <h4 class="font-black text-lg text-gray-800 leading-tight">${displayName} x ${displayQty}</h4>
+                            <p class="text-blue-600 font-black text-xl mt-1">₹${displayTotal}</p>
+                        </div>
+                        
+                        <div class="pt-2 border-t border-gray-50 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></div>
+                            <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest">Status: Awaiting Dispatch</p>
+                        </div>
                     </div>
                 `;
             });
