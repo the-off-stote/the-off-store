@@ -136,7 +136,7 @@
 
                 // Save to local history
                 let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-                history.push({orderData, date: new Date().toLocaleDateString()});
+                history.push({...orderData, date: new Date().toLocaleDateString()});
                 localStorage.setItem('orderHistory', JSON.stringify(history));
 
                 // 3. LAUNCH UPI
