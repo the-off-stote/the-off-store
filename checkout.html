@@ -5,111 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | The Off Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 text-gray-900 p-4">
-    <div class="max-w-md mx-auto space-y-6 pb-20">
+<body class="bg-gray-50 p-6 font-['Inter']">
+    <div class="max-w-md mx-auto space-y-6">
+        <h2 class="text-3xl font-black italic tracking-tighter uppercase text-blue-600">Verify Order</h2>
         
-        <header class="flex items-center space-x-3 py-4">
-            <a href="index.html" class="bg-white p-2 px-4 rounded-2xl shadow-sm border text-gray-400 font-bold">←</a>
-            <h1 class="text-xl font-black uppercase tracking-tighter text-gray-800">Checkout</h1>
-        </header>
-
-        <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm space-y-4">
-            <h3 class="font-black text-[10px] uppercase text-gray-400 tracking-widest">Delivery Address</h3>
-            <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-            <input type="text" id="cust-address" placeholder="House No, Area, City, PIN (Odisha)" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 rounded-2xl border bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-        </div>
-
-        <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm space-y-3">
-            <h3 class="font-black text-[10px] uppercase text-gray-400 tracking-widest">Order Summary</h3>
-            <div class="flex justify-between items-start">
+        <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border space-y-4">
+            <div class="flex justify-between border-b pb-4">
                 <div>
-                    <p id="product-display-name" class="font-bold text-gray-800 text-sm">Loading product...</p>
-                    <p class="text-[10px] text-blue-600 font-black uppercase tracking-tight">Free Express Shipping (Odisha)</p>
+                    <p class="text-[10px] font-black text-gray-400 uppercase">Order ID</p>
+                    <p id="dispId" class="font-black text-sm"></p>
                 </div>
-                <span id="product-display-price" class="font-black text-gray-800">₹0</span>
+                <div class="text-right">
+                    <p class="text-[10px] font-black text-gray-400 uppercase">Amount</p>
+                    <p id="dispTotal" class="font-black text-xl text-blue-600"></p>
+                </div>
             </div>
-            
-            <div class="border-t border-dashed pt-3 mt-3 flex justify-between items-center">
-                <span class="font-black text-lg text-gray-800 uppercase italic tracking-tighter">Total To Pay</span>
-                <span id="total-price-big" class="font-black text-3xl text-blue-600 tracking-tighter">₹0</span>
-            </div>
+            <p id="dispDetails" class="text-xs font-bold text-gray-600"></p>
         </div>
 
-        <button onclick="processOrder()" class="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-lg shadow-xl active:scale-95 transition-all">
-            PAY ONLINE (UPI)
-        </button>
-        
-        <p class="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">Secure UPI Payment • Odisha Startup</p>
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-xl">
+            <p class="text-[10px] font-black text-yellow-800 uppercase">Instruction</p>
+            <p class="text-xs font-bold text-yellow-700">Must mention Order ID in Payment Note to confirm.</p>
+        </div>
+
+        <button onclick="payNow()" class="w-full bg-black text-white py-5 rounded-full font-black uppercase tracking-widest shadow-xl">Pay via UPI Now</button>
     </div>
 
     <script>
-        // 1. Load the product selected from index.html
-        const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || { name: "10-in-1 Puncture Kit", price: 599 };
+        const order = JSON.parse(localStorage.getItem('pendingOrder'));
+        document.getElementById('dispId').innerText = order.id;
+        document.getElementById('dispTotal').innerText = `₹${order.total}`;
+        document.getElementById('dispDetails').innerText = `${order.name} (Qty: ${order.qty})`;
 
-        // 2. Update the UI with Product Details
-        document.getElementById('product-display-name').innerText = selectedProduct.name;
-        document.getElementById('product-display-price').innerText = "₹" + selectedProduct.price;
-        document.getElementById('total-price-big').innerText = "₹" + selectedProduct.price;
-
-        async function processOrder() {
-            const name = document.getElementById('cust-name').value;
-            const addr = document.getElementById('cust-address').value;
-            const phone = document.getElementById('cust-phone').value;
+        function payNow() {
+            // Updated with your UPI ID
+            const upiUrl = `upi://pay?pa=8917228811@axl&pn=TheOffStore&am=${order.total}&tn=${order.id}&cu=INR`;
             
-            // --- YOUR LIVE TELEGRAM DETAILS ---
-            const botToken = "YOUR_BOT_TOKEN_HERE"; // PASTE YOUR TOKEN FROM BOTFATHER
-            const chatId = "YOUR_CHAT_ID_HERE";     // PASTE YOUR ID FROM USERINFOBOT
+            // Save to history before leaving
+            let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            history.push({...order, date: new Date().toLocaleDateString()});
+            localStorage.setItem('orderHistory', JSON.stringify(history));
             
-            // --- YOUR LIVE UPI ID ---
-            const myUpi = "theoffstore@nyes";
-
-            if(!name || !addr || !phone) {
-                alert("Please fill in your Delivery Details!");
-                return;
-            }
-
-            const orderId = "OFF" + Math.floor(100000 + Math.random() * 900000);
-            
-            // 3. Send Data to Telegram Bot Silently
-            const telegramMsg = `🚀 *NEW ORDER: ${orderId}*\n\n` +
-                                `📦 *Item:* ${selectedProduct.name}\n` +
-                                `👤 *Name:* ${name}\n` +
-                                `📍 *Address:* ${addr}\n` +
-                                `📞 *Phone:* ${phone}\n` +
-                                `💰 *Amount:* ₹${selectedProduct.price}\n\n` +
-                                `✅ _Customer is paying now!_`;
-
-            fetch(`https://api.telegram.org/bot${8613765858:AAFQYiCGd1NcpYjvh8GMNCXw70TP1Nl7RjM}/sendMessage?chat_id=${6563154132}&text=${encodeURIComponent(telegramMsg)}&parse_mode=Markdown`);
-
-            // 4. Save to Local Order History (For "On its way" status)
-            const newOrder = {
-                id: orderId,
-                date: new Date().toLocaleDateString('en-IN'),
-                amount: "₹" + selectedProduct.price,
-                status: "ON ITS WAY",
-                trackingStatus: "Processing at Odisha Hub",
-                trackingLink: "#",
-                item: selectedProduct.name
-            };
-            
-            let history = JSON.parse(localStorage.getItem('offStoreHistory')) || [];
-            history.push(newOrder);
-            localStorage.setItem('offStoreHistory', JSON.stringify(history));
-
-            // 5. Trigger Direct UPI Payment (With Auto-Filled Order ID in Note)
-            const upiLink = `upi://pay?pa=${myUpi}&pn=TheOffStore&am=${selectedProduct.price}&cu=INR&tn=Order-${orderId}`;
-            window.location.href = upiLink;
-
-            // 6. Redirect to History page
-            setTimeout(() => {
-                window.location.href = "history.html";
-            }, 3000);
+            window.location.href = upiUrl;
         }
     </script>
 </body>
