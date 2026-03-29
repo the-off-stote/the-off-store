@@ -3,52 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Checkout | The Off Store</title>
+    <title>Checkout | The Off Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        input, textarea { border: 2px solid #f3f4f6 !important; transition: all 0.2s; }
+        input:focus, textarea:focus { border-color: #2563eb !important; background-color: white !important; outline: none; }
+    </style>
 </head>
-<body class="bg-gray-50 p-6 font-['Inter']">
-    <div class="max-w-md mx-auto space-y-6">
-        <h2 class="text-3xl font-black italic tracking-tighter uppercase text-blue-600">Verify Order</h2>
+<body class="pb-10">
+
+    <header class="p-6 bg-white border-b sticky top-0 z-50 flex items-center justify-between">
+        <button onclick="window.history.back()" class="text-xl font-black">←</button>
+        <h1 class="font-black text-sm tracking-widest uppercase text-gray-400">Secure Checkout</h1>
+        <div class="w-6"></div>
+    </header>
+
+    <main class="p-6 max-w-md mx-auto space-y-6">
         
-        <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border space-y-4">
-            <div class="flex justify-between border-b pb-4">
-                <div>
-                    <p class="text-[10px] font-black text-gray-400 uppercase">Order ID</p>
-                    <p id="dispId" class="font-black text-sm"></p>
-                </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-black text-gray-400 uppercase">Amount</p>
-                    <p id="dispTotal" class="font-black text-xl text-blue-600"></p>
-                </div>
+        <div class="bg-blue-600 rounded-[2.5rem] p-6 text-white shadow-xl shadow-blue-100 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-4 relative z-10">
+                <p id="orderIdDisp" class="text-[10px] font-black bg-white/20 px-2 py-1 rounded">OFF-XXXX</p>
+                <p class="text-[10px] font-black uppercase tracking-widest opacity-80">Order Summary</p>
             </div>
-            <p id="dispDetails" class="text-xs font-bold text-gray-600"></p>
+            <h2 id="productNameDisp" class="text-xl font-black leading-tight relative z-10">Product Name</h2>
+            <div class="mt-4 flex justify-between items-end border-t border-white/20 pt-4 relative z-10">
+                <div>
+                    <p class="text-[10px] font-bold opacity-70 uppercase">Total Amount</p>
+                    <p id="totalPriceDisp" class="text-3xl font-black tracking-tighter">₹0</p>
+                </div>
+                <p id="qtyDisp" class="text-sm font-black bg-white text-blue-600 px-3 py-1 rounded-full italic">Qty: 1</p>
+            </div>
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl font-black italic">OFF</div>
         </div>
 
-        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-xl">
-            <p class="text-[10px] font-black text-yellow-800 uppercase">Instruction</p>
-            <p class="text-xs font-bold text-yellow-700">Must mention Order ID in Payment Note to confirm.</p>
+        <div class="bg-white rounded-[2.5rem] p-6 border shadow-sm space-y-4">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Shipping Details (Pan-India)</h3>
+            
+            <div>
+                <label class="text-[10px] font-black uppercase ml-1 text-gray-500">Full Name</label>
+                <input type="text" id="custName" placeholder="Enter your full name" class="w-full mt-1 p-4 bg-gray-50 rounded-2xl font-bold text-sm">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black uppercase ml-1 text-gray-500">WhatsApp Number</label>
+                <input type="tel" id="custPhone" placeholder="10-digit mobile number" class="w-full mt-1 p-4 bg-gray-50 rounded-2xl font-bold text-sm">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black uppercase ml-1 text-gray-500">Full Delivery Address</label>
+                <textarea id="custAddress" rows="3" placeholder="House No, Area, Landmark, City, State, Pincode" class="w-full mt-1 p-4 bg-gray-50 rounded-2xl font-bold text-sm"></textarea>
+            </div>
         </div>
 
-        <button onclick="payNow()" class="w-full bg-black text-white py-5 rounded-full font-black uppercase tracking-widest shadow-xl">Pay via UPI Now</button>
-    </div>
+        <div class="space-y-4">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-2xl">
+                <p class="text-[9px] font-black text-yellow-800 uppercase tracking-widest mb-1">Payment Instructions</p>
+                <p class="text-[11px] font-bold text-yellow-700 leading-tight">After clicking Pay Now, please ensure you complete the payment and <span class="underline">mention your Order ID in the note</span>.</p>
+            </div>
+
+            <button onclick="handlePayment()" id="payBtn" class="w-full bg-black text-white py-5 rounded-full font-black text-lg uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex justify-center items-center gap-2">
+                Pay Now via UPI
+            </button>
+            
+            <div class="flex justify-center items-center gap-4 opacity-30">
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-500">Secure Payment</p>
+                <div class="h-px w-8 bg-gray-300"></div>
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-500">Pan-India Support</p>
+            </div>
+        </div>
+
+    </main>
 
     <script>
+        // Load data from localStorage (set by index.html)
         const order = JSON.parse(localStorage.getItem('pendingOrder'));
-        document.getElementById('dispId').innerText = order.id;
-        document.getElementById('dispTotal').innerText = `₹${order.total}`;
-        document.getElementById('dispDetails').innerText = `${order.name} (Qty: ${order.qty})`;
+        
+        if(!order) {
+            window.location.href = 'index.html';
+        }
 
-        function payNow() {
-            // Updated with your UPI ID
-            const upiUrl = `upi://pay?pa=8917228811@axl&pn=TheOffStore&am=${order.total}&tn=${order.id}&cu=INR`;
-            
-            // Save to history before leaving
-            let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-            history.push({...order, date: new Date().toLocaleDateString()});
-            localStorage.setItem('orderHistory', JSON.stringify(history));
-            
-            window.location.href = upiUrl;
+        // Fill Display
+        document.getElementById('orderIdDisp').innerText = order.id;
+        document.getElementById('productNameDisp').innerText = order.name;
+        document.getElementById('totalPriceDisp').innerText = `₹${order.total}`;
+        document.getElementById('qtyDisp').innerText = `Qty: ${order.qty}`;
+
+        async function handlePayment() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+
+            // 1. Basic Validation
+            if(!name || !phone || !address) {
+                alert("Please fill in your shipping details so we can deliver your order!");
+                return;
+            }
+
+            if(phone.length < 10) {
+                alert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            const payBtn = document.getElementById('payBtn');
+            payBtn.innerText = "Syncing Order...";
+            payBtn.disabled = true;
+
+            // 2. Data for Google Sheet
+            const orderData = {
+                orderId: order.id,
+                name: order.name,
+                qty: order.qty,
+                total: order.total,
+                customerName: name,
+                customerPhone: phone,
+                customerAddress: address
+            };
+
+            try {
+                // YOUR SCRIPT URL
+                const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyV8VMfgP38mp7JOzYDpA-Mc61CmU49kveyfpYX773GJQ0ZQwdGTgAFaXbCcFlFWc_9/exec';
+                
+                // Send data to Sheet (using no-cors as it's a simple append)
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    body: JSON.stringify(orderData)
+                });
+
+                // 3. Save to History for the user to track later
+                let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+                history.push({...orderData, date: new Date().toLocaleDateString()});
+                localStorage.setItem('orderHistory', JSON.stringify(history));
+
+                // 4. LAUNCH UPI INTENT
+                // PA: 8917228811@axl | PN: TheOffStore | TN: Order ID
+                const upiUrl = `upi://pay?pa=8917228811@axl&pn=TheOffStore&am=${order.total}&tn=${order.id}&cu=INR`;
+                
+                window.location.href = upiUrl;
+
+                // Provide a backup message if the app doesn't open
+                setTimeout(() => {
+                    payBtn.innerText = "Pay Now via UPI";
+                    payBtn.disabled = false;
+                }, 4000);
+
+            } catch (error) {
+                alert("Connection error. Please check your internet and try again.");
+                payBtn.innerText = "Pay Now via UPI";
+                payBtn.disabled = false;
+            }
         }
     </script>
 </body>
