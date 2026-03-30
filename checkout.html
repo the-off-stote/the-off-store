@@ -67,14 +67,22 @@
             <div class="bg-yellow-50 border-2 border-yellow-100 p-4 rounded-3xl flex gap-3 items-center">
                 <span class="text-xl">⚠️</span>
                 <p class="text-[10px] font-bold text-yellow-800 leading-tight">
-                    <span class="font-black uppercase tracking-widest block mb-1">Payment Rule</span>
-                    Enter your Order ID in the UPI payment note for instant verification.
+                    <span class="font-black uppercase tracking-widest block mb-1">Payment Options</span>
+                    Pay via UPI for faster processing, or choose Cash on Delivery.
                 </p>
             </div>
 
-            <button onclick="handlePayment()" id="payBtn" class="w-full bg-black text-white py-6 rounded-full font-black text-lg uppercase tracking-widest shadow-xl active:scale-95 transition-all">
-                Pay Now via UPI
-            </button>
+            <div class="flex gap-3">
+                <button onclick="handlePayment()" id="payBtn" class="w-1/2 bg-black text-white py-5 rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl active:scale-95 transition-all flex flex-col items-center justify-center">
+                    <span>Pay UPI</span>
+                    <span class="text-[8px] text-gray-400 mt-1">Fastest</span>
+                </button>
+                
+                <button onclick="handleCOD()" id="codBtn" class="w-1/2 bg-white text-black border-2 border-gray-200 py-5 rounded-3xl font-black text-sm uppercase tracking-widest active:scale-95 transition-all flex flex-col items-center justify-center">
+                    <span>C.O.D.</span>
+                    <span class="text-[8px] text-gray-500 mt-1">Pay on Arrival</span>
+                </button>
+            </div>
         </div>
     </main>
 
@@ -91,19 +99,26 @@
             document.getElementById('qtyDisp').innerText = order.qty;
         }
 
-        // 2. PAYMENT & GOOGLE SHEET SYNC
-        async function handlePayment() {
+        // VALIDATION HELPER
+        function getFormData() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const address = document.getElementById('custAddress').value;
 
             if(!name || !phone || !address) {
                 alert("Please fill in shipping details!");
-                return;
+                return null;
             }
+            return { name, phone, address };
+        }
+
+        // 2. PAYMENT & GOOGLE SHEET SYNC (UPI)
+        async function handlePayment() {
+            const formData = getFormData();
+            if (!formData) return;
 
             const payBtn = document.getElementById('payBtn');
-            payBtn.innerText = "Processing Your Order...";
+            payBtn.innerHTML = "Processing...";
             payBtn.disabled = true;
 
             const orderData = {
@@ -111,9 +126,9 @@
                 name: order.name,
                 qty: order.qty,
                 total: order.total,
-                customerName: name,
-                customerPhone: phone,
-                customerAddress: address
+                customerName: formData.name,
+                customerPhone: formData.phone,
+                customerAddress: formData.address
             };
 
             try {
@@ -132,7 +147,7 @@
                 history.push({...orderData, date: new Date().toLocaleDateString()});
                 localStorage.setItem('orderHistory', JSON.stringify(history));
 
-                // LAUNCH UPI: 8917228811@axl
+                // LAUNCH UPI: theoffstore@nyes
                 const upiUrl = `upi://pay?pa=theoffstore@nyes&pn=TheOffStore&am=${order.total}&tn=${order.id}&cu=INR`;
                 window.location.href = upiUrl;
 
@@ -143,8 +158,48 @@
 
             } catch (error) {
                 alert("Network issue. Check your connection!");
-                payBtn.innerText = "Pay Now via UPI";
+                payBtn.innerHTML = "<span>Pay UPI</span><span class='text-[8px] text-gray-400 mt-1'>Fastest</span>";
                 payBtn.disabled = false;
+            }
+        }
+
+        // 3. CASH ON DELIVERY LOGIC
+        async function handleCOD() {
+            const formData = getFormData();
+            if (!formData) return;
+
+            const codBtn = document.getElementById('codBtn');
+            codBtn.innerHTML = "Processing...";
+            codBtn.disabled = true;
+
+            // Appending "-COD" so you know in Google Sheets
+            const codOrderId = order.id + "-COD";
+
+            const orderData = {
+                orderId: codOrderId,
+                name: order.name,
+                qty: order.qty,
+                total: order.total,
+                customerName: formData.name,
+                customerPhone: formData.phone,
+                customerAddress: formData.address
+            };
+
+            try {
+                const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyV8VMfgP38mp7JOzYDpA-Mc61CmU49kveyfpYX773GJQ0ZQwdGTgAFaXbCcFlFWc_9/exec';
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', body: JSON.stringify(orderData) });
+
+                // Save to local history
+                let history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+                history.push({...orderData, date: new Date().toLocaleDateString()});
+                localStorage.setItem('orderHistory', JSON.stringify(history));
+
+                // Skip UPI intent and go straight to success page
+                window.location.href = 'success.html';
+            } catch (error) {
+                alert("Network issue. Check your connection!");
+                codBtn.innerHTML = "<span>C.O.D.</span><span class='text-[8px] text-gray-500 mt-1'>Pay on Arrival</span>";
+                codBtn.disabled = false;
             }
         }
     </script>
